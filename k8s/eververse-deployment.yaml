@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: eververse
+  name: eververse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eververse
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: eververse
+    spec:
+      containers:
+        - image: docker.io/bardiaardakanian/eververse
+          imagePullPolicy: IfNotPresent
+          name: eververse
+          resources:
+            requests:
+              cpu: "40m"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /env/.env
+              subPath: .env
+              name: config-map
+              readOnly: true
+      volumes:
+        - name: config-map
+          configMap:
+            name: eververse-config
+status: {}

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webkit
+spec:
+  containers:
+    - name: webkit
+      image: docker.io/bardiaardakanian/webkit
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 80

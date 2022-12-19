@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  .env: |
+    HOST=0.0.0.0
+    PORT=8080
+    SERVER_PORT=1323
+    API_KEY=9900DC68-EB5F-4FF5-8820-F8345AC607F1
+    
+    REDIS_HOST=redis-service
+    REDIS_PORT=6379
+    REDIS_DB=0
+    KEY_EX=5
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: eververse-config

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -13,8 +14,13 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var ServerHost string
 var ServerPort string
+var RedisHost string
 var RedisPort string
+var RedisDB string
+var KeyExp int
+var CoinApi string
 
 type MyJSONSerializer struct {
 	echo.DefaultJSONSerializer
@@ -27,7 +33,7 @@ func (d MyJSONSerializer) Serialize(c echo.Context, i interface{}, indent string
 
 func getEnv(key string) string {
 	value := os.Getenv(key)
-	log.Printf("- [ENV] %s:%s", key, value)
+	log.Printf("- [ENV] %s:%s\n", key, value)
 
 	return value
 }
@@ -35,11 +41,25 @@ func getEnv(key string) string {
 func loadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		panic("Error loading .env file")
+		panic("Error loading .env file\n")
 	}
 
-	ServerPort = getEnv("EXPOSE_PORT")
-	RedisPort = getEnv("REDIS_MAP_PORT")
+	ServerHost = getEnv("HOST")
+	ServerPort = getEnv("SERVER_PORT")
+	RedisHost = getEnv("REDIS_HOST")
+	RedisPort = getEnv("REDIS_PORT")
+	RedisDB = getEnv("REDIS_DB")
+
+	s := getEnv("KEY_EX")
+
+	ct, err := strconv.Atoi(s)
+	if err != nil {
+		log.Printf(" - [FATAL] %v\n", err)
+		ct = 5
+	}
+	KeyExp = ct * 60
+
+	CoinApi = getEnv("API_KEY")
 }
 
 func main() {
@@ -54,7 +74,7 @@ func main() {
 
 	e.POST("/get", getPrice)
 
-	e.Logger.Fatal(e.Start(":" + ServerPort))
+	e.Logger.Fatal(e.Start(ServerHost + ":" + ServerPort))
 }
 
 func hello(c echo.Context) error {
@@ -74,7 +94,7 @@ func getPrice(c echo.Context) error {
 
 		err := set(coin, fmt.Sprintf("%v", rate))
 		if err != nil {
-			log.Printf(" - [FATAL] %v", err)
+			log.Printf(" - [FATAL] Fail set %v\n", err)
 		}
 
 		currentRate = rate
@@ -103,12 +123,12 @@ func getExchangeRate(name string) (string, string, error) {
 
 	rates := ExchangeRate{}
 	_, err := client.R().
-		SetHeader("X-CoinAPI-Key", os.Getenv("COIN_API_KEY")).
+		SetHeader("X-CoinAPI-Key", CoinApi).
 		SetResult(&rates).
 		Get("https://rest.coinapi.io/v1/exchangerate/" + name + "/USD")
 
 	if err != nil {
-		log.Printf("[ERROR] Fail to get %s exchange rate, Error %s", name, err.Error())
+		log.Printf(" - [ERROR] Fail to get %s exchange rate, Error %s\n", name, err.Error())
 		return "", "", err
 	}
 	return rates.AssetIdBase, fmt.Sprintf("%v", rates.Rate), err
