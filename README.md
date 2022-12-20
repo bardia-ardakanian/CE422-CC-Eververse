@@ -5,6 +5,15 @@ Cloud Computing course project
 ```
 docker-compose up --build -d --force-recreate
 ```
+
+## Kubernetes
+```
+chmod +x deploy.sh
+./deploy.sh
+
+chmod +x demo.sh
+./demo.sh
+```
 Browse to `http://localhost` and you should see the landing page.
 
 ## Requests
