@@ -33,9 +33,9 @@ kubectl run webkit --image=bardiaardakanian/webkit -i --tty -- sh
 ## Configure
 
 Following fields are configurable.
-- COIN-API-KEY
-- Web MAPPING Port (80 by default)
-- Web EXPOSE Port (1323 by default)
-- Redis MAPPING Port (6379 by default)
-- Redis EXPOSE Port (6379 by default)
-- Redis cache expiration by minutes (5 by default)
+- API KEY
+- Server Host
+- Server Port
+- Redis Host
+- Redis Port
+- Redis Expiration
