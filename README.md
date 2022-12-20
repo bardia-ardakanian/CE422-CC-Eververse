@@ -2,19 +2,27 @@
 Cloud Computing course project
 
 ## Usage
-```
+```bash
 docker-compose up --build -d --force-recreate
 ```
+Browse to `http://localhost` and you should see the landing page.
 
 ## Kubernetes
-```
+### Deployment
+```bash
 chmod +x deploy.sh
 ./deploy.sh
-
+‍‍‍```
+### Testing method 1
+```bash
 chmod +x demo.sh
 ./demo.sh
 ```
-Browse to `http://localhost` and you should see the landing page.
+### Testing method 2
+```bash
+kubectl run webkit --image=bardiaardakanian/webkit -i --tty -- sh
+# curl -v -Ss http://eververse-service.default.svc.cluster.local:8080
+```
 
 ## Requests
 
