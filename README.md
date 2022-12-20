@@ -12,7 +12,7 @@ Browse to `http://localhost` and you should see the landing page.
 ```bash
 chmod +x deploy.sh
 ./deploy.sh
-‍‍‍```
+```
 
 ### Testing method 1
 ```bash
